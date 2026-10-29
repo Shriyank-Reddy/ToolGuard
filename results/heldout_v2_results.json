@@ -1,0 +1,136 @@
+{
+  "set": "heldout_v2",
+  "detector_hash": "bb5280aab16e4f251ff3803b86b5a1ec6765d2cd9f220d4022b776ab033bc379",
+  "n_tools": 30,
+  "n_malicious": 12,
+  "checks": {
+    "hidden_instructions": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "tn": 26,
+      "precision": 1.0,
+      "recall": 0.75,
+      "fpr": 0.0
+    },
+    "obfuscation": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "tn": 27,
+      "precision": 1.0,
+      "recall": 0.333,
+      "fpr": 0.0
+    },
+    "exfiltration": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 28,
+      "precision": null,
+      "recall": 0.0,
+      "fpr": 0.0
+    },
+    "over_permission": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "tn": 26,
+      "precision": 0.5,
+      "recall": 1.0,
+      "fpr": 0.071
+    },
+    "lookalike_names": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 28,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    },
+    "rug_pull": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "tn": 5,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    }
+  },
+  "overall": {
+    "tp": 8,
+    "fp": 1,
+    "fn": 4,
+    "tn": 17,
+    "precision": 0.889,
+    "recall": 0.667,
+    "fpr": 0.056
+  },
+  "false_positives": [
+    "ironbridge/open_support_ticket [over_permission]",
+    "willowmere/compress_images [over_permission]"
+  ],
+  "misses": [
+    "copperfield/summarize_page [hidden_instructions]",
+    "copperfield/clean_filename [obfuscation]",
+    "willowmere/count_calories [obfuscation]",
+    "willowmere/sync_progress [exfiltration]",
+    "willowmere/compress_images [exfiltration]"
+  ],
+  "pooled_all_checks": {
+    "tp": 13,
+    "fp": 2,
+    "fn": 5,
+    "tn": 140,
+    "precision": 0.867,
+    "recall": 0.722,
+    "fpr": 0.014
+  },
+  "rug_pull_detail": {
+    "n_pairs": 10,
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "tn": 5,
+    "precision": 1.0,
+    "recall": 1.0,
+    "fpr": 0.0,
+    "benign_wrongly_flagged": "0 of 5",
+    "benign_by_change": {
+      "reformat": {
+        "n": 1,
+        "ignored": 1,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "whitespace": {
+        "n": 1,
+        "ignored": 1,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "version_bump": {
+        "n": 1,
+        "ignored": 1,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "typo_fix": {
+        "n": 1,
+        "ignored": 0,
+        "shown_low": 1,
+        "wrongly_flagged": 0
+      },
+      "punctuation_fix": {
+        "n": 1,
+        "ignored": 0,
+        "shown_low": 1,
+        "wrongly_flagged": 0
+      }
+    },
+    "missed": [],
+    "false_alarms": []
+  }
+}

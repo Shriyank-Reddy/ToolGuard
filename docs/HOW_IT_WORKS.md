@@ -73,7 +73,7 @@ These are heuristics for ranking, not calibrated probabilities.
 | `evaluate.py` | metrics against labels, freeze guard, chart |
 | `scripts/make_servers.py`, `make_heldout.py` | synthetic data generators |
 | `app/streamlit_app.py` | the 3-page UI; highlights suspicious text with `<mark>` |
-| `tests/` | 33 fast offline tests |
+| `tests/` | 65 fast offline tests |
 
 ## 5. Measuring honestly
 
@@ -89,7 +89,18 @@ A scanner that flags everything has recall 1.0 and is useless; the false positiv
 
 Honest limitations: the data is synthetic and written by the same person who wrote the detectors, the held-out set is only 27 tools, and the benign/malicious boundary is sometimes arguable (e.g. a shadowing sentence is both an order and an override).
 
-## 6. Ten likely interview questions
+## 6. v2 changes
+
+The v1 held-out test exposed four weaknesses. v2 fixes them with *general* rules (not exact-string patches):
+
+1. **Over-permission** (was precision 0.20, FPR 0.15). The keyword table was replaced by `PURPOSES` in `config.py`: each purpose lists the permissions it legitimately needs (reminders and notes write files; port listing may run a shell; messaging may write to the network ...). A permission outside the expected set is graded: *clear mismatch* (e.g. an unit converter asking for `email:send`) is medium, or high for `shell:exec`/`env:read`; *borderline* (an extra `network:read`/`file:read`/`db:read`) is only **low**, which is shown but not counted as a flag. When no purpose is recognised, only powerful permissions are flagged.
+2. **Obfuscation.** Comments are matched in every form (unterminated HTML comments, Markdown `[//]: #` comments, `/* */`, hidden HTML elements). Encoded payloads (base64, hex, percent-encoding, `\x`/`\u` escapes) are **decoded and the decoded text is scanned** with the instruction and exfiltration checks: a payload that decodes to an instruction is high, harmless readable text is medium. Hashes (32/40/64... hex characters that do not decode) and long numbers are ignored.
+3. **Exfiltration.** Transfer verbs are matched as a family (relay, forward, sync, upload, post, ship, mirror ...), a URL now needs a verb *and* a data noun (so "see https://docs.example" stays fine), a parameter is a possible side channel if *any word* of its name is in a token set (`session_info`, `sessionState`, `trace` ...), and conversation data has its own patterns ("everything the user said earlier", "transcript"). If sending to a URL is the tool's **first sentence**, it declares `network:write`/`email:send` and the sentence has no "also/after each call" wording, it is treated as the tool's main job (low).
+4. **Rug pull.** `meaning_changes()` compares word by word. Adding, removing or swapping a *meaning word* (`not`, `never`, `always`, `only`, `local`/`remote`, `stores`, `sends` ...) makes a change medium even if it is a one-word edit; replacing a word with a near-identical one (similarity ≥ 0.8) is treated as a spelling fix, so "nver" → "never" stays low. New URLs or email addresses are also medium.
+
+**The evaluation protocol for v2.** The v1 held-out set was relabeled "development" (its failures guided the fixes), the detectors were frozen again (new hash), and a brand-new 30-tool set was generated with assertions that nothing repeats earlier data. The README reports all three sets side by side. Lesson: *each* held-out set is only trustworthy once.
+
+## 7. Eleven likely interview questions
 
 **1. What is tool poisoning and why is it hard to notice?**
 Malicious instructions placed in a tool's description or parameter descriptions. The model reads and trusts them, but users normally only see a tool's name, so the attack is invisible to people.
@@ -120,3 +131,6 @@ Three separate text sources: classifier sentences (`intent_data.py`), main evalu
 
 **10. What would you do next to make it production-worthy?**
 Collect real public tool definitions and have people label them; decode and rescan base64/hex payloads; replace the keyword purpose table with a learned or LLM-assisted purpose-to-permission model; add cross-server checks and a GitHub Action running `toolguard diff` on pull requests; emit SARIF; and calibrate scores against measured risk.
+
+**11. You used the held-out set to find weaknesses and then fixed them. Is it still a valid test set? How do you keep improving honestly?**
+No: once its failures guide changes, it becomes a *development* set and its scores are optimistic. I relabeled it, kept reporting it, froze the new detectors, and generated a fresh held-out set (with assertions that it shares no sentences with earlier data or training sentences) that is run exactly once. The honest result was mixed: false positives fell a lot (overall FPR 0.27 → 0.06) but recall on the new attacks was only 0.67, which shows rule lists keep missing new wordings. Each improvement cycle needs a new untouched set, which is why I keep the generator scripts and freeze hashes in the repo.

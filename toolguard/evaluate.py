@@ -161,9 +161,9 @@ def make_chart() -> Path:
         ax.set_ylim(0, 1.12)
         ax.spines[["top", "right"]].set_visible(False)
     handles, labels_ = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels_, loc="upper right", ncol=3, fontsize=9, frameon=False)
+    fig.legend(handles, labels_, loc="lower center", ncol=3, fontsize=9, frameon=False)
     fig.suptitle("ToolGuard v2: tuned vs. development vs. fresh held-out", fontsize=12)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     out = RESULTS / "comparison.png"
     fig.savefig(out, dpi=130)
     return out

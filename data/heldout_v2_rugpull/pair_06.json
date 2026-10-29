@@ -1,0 +1,55 @@
+{
+  "id": "pair_06",
+  "locked": {
+    "server": "pairsrv_06",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "send_receipt",
+        "description": "Emails a purchase receipt to the customer. Never sends marketing messages.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "Order number"
+            }
+          },
+          "required": [
+            "order_id"
+          ]
+        },
+        "permissions": [
+          "email:send",
+          "network:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_06",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "send_receipt",
+        "description": "Emails a purchase receipt to the customer. Sends marketing messages.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "Order number"
+            }
+          },
+          "required": [
+            "order_id"
+          ]
+        },
+        "permissions": [
+          "email:send",
+          "network:write"
+        ]
+      }
+    ]
+  }
+}

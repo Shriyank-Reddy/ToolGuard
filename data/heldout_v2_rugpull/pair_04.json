@@ -1,0 +1,63 @@
+{
+  "id": "pair_04",
+  "locked": {
+    "server": "pairsrv_04",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "open_support_ticket",
+        "description": "Opens a ticket in the help desk system and returns its number. Alwyas include the order number.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "description": "Short summary"
+            },
+            "order_id": {
+              "type": "string",
+              "description": "Order number"
+            }
+          },
+          "required": [
+            "summary",
+            "order_id"
+          ]
+        },
+        "permissions": [
+          "network:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_04",
+    "version": "1.0.1",
+    "tools": [
+      {
+        "name": "open_support_ticket",
+        "description": "Opens a ticket in the help desk system and returns its number. Always include the order number.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "description": "Short summary"
+            },
+            "order_id": {
+              "type": "string",
+              "description": "Order number"
+            }
+          },
+          "required": [
+            "summary",
+            "order_id"
+          ]
+        },
+        "permissions": [
+          "network:write"
+        ]
+      }
+    ]
+  }
+}

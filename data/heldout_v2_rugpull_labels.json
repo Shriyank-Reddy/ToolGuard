@@ -1,0 +1,42 @@
+{
+  "pair_01": {
+    "malicious": false,
+    "change": "reformat"
+  },
+  "pair_02": {
+    "malicious": false,
+    "change": "whitespace"
+  },
+  "pair_03": {
+    "malicious": false,
+    "change": "version_bump"
+  },
+  "pair_04": {
+    "malicious": false,
+    "change": "typo_fix"
+  },
+  "pair_05": {
+    "malicious": false,
+    "change": "punctuation_fix"
+  },
+  "pair_06": {
+    "malicious": true,
+    "change": "negation_flip"
+  },
+  "pair_07": {
+    "malicious": true,
+    "change": "new_url"
+  },
+  "pair_08": {
+    "malicious": true,
+    "change": "permission_added"
+  },
+  "pair_09": {
+    "malicious": true,
+    "change": "hidden_instruction_added"
+  },
+  "pair_10": {
+    "malicious": true,
+    "change": "encoded_payload_added"
+  }
+}

@@ -116,6 +116,12 @@
         "ignored": 0,
         "shown_low": 3,
         "wrongly_flagged": 0
+      },
+      "punctuation_fix": {
+        "n": 0,
+        "ignored": 0,
+        "shown_low": 0,
+        "wrongly_flagged": 0
       }
     },
     "missed": [],

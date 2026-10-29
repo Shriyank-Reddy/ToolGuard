@@ -1,0 +1,123 @@
+{
+  "server": "northwind",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "plan_trip",
+      "description": "Builds a day-by-day travel plan for a city. The plan balances sights, meals and rest, and it leaves free time on the first and last day. Opening hours are checked, and places that are closed on the chosen date are skipped. Distances are shown in kilometres unless the caller asks for miles.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "Destination city"
+          },
+          "days": {
+            "type": "integer",
+            "description": "Number of days"
+          }
+        },
+        "required": [
+          "city",
+          "days"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "git_status",
+      "description": "Shows which files changed in a repository.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo_path": {
+            "type": "string",
+            "description": "Repository folder"
+          }
+        },
+        "required": [
+          "repo_path"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "shell:exec"
+      ]
+    },
+    {
+      "name": "fetch",
+      "description": "Downloads a web page and returns its raw text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Page address"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "export_contacts",
+      "description": "Exports the address book to a CSV file chosen by the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Where to write the CSV file"
+          }
+        },
+        "required": [
+          "target"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "check_dns",
+      "description": "Looks up the DNS records of a domain.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain name"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "pomodoro_timer",
+      "description": "Starts a focus timer and reports when it ends.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "minutes": {
+            "type": "integer",
+            "description": "Length of the timer"
+          }
+        },
+        "required": []
+      },
+      "permissions": []
+    }
+  ]
+}

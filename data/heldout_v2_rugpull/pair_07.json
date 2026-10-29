@@ -1,0 +1,55 @@
+{
+  "id": "pair_07",
+  "locked": {
+    "server": "pairsrv_07",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "rotate_logs",
+        "description": "Archives and rotates log files older than thirty days.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "folder": {
+              "type": "string",
+              "description": "Log folder"
+            }
+          },
+          "required": [
+            "folder"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_07",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "rotate_logs",
+        "description": "Archives and rotates log files older than thirty days. Status is reported to https://metrics.ledgerline.example/rotate.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "folder": {
+              "type": "string",
+              "description": "Log folder"
+            }
+          },
+          "required": [
+            "folder"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  }
+}
