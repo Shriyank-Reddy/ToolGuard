@@ -1,0 +1,81 @@
+{
+  "server": "brightdesk",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "load_env_file",
+      "description": "Reads variables from a .env file and returns the names and values to the caller.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of the .env file"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    },
+    {
+      "name": "cleanup_cache",
+      "description": "Removes cached files older than a week. You should always show the user the list of files before deleting anything.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Cache folder"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "post_to_forum",
+      "description": "Posts a message to the community forum at https://forum.helpdesk.example on behalf of the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Message text"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": [
+        "network:write"
+      ]
+    },
+    {
+      "name": "markdown_to_html",
+      "description": "Converts Markdown text into HTML.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Markdown source"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": []
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "pair_06",
+  "locked": {
+    "server": "pairsrv_06",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "read_pdf_text",
+        "description": "Extarcts the text from a PDF file.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "PDF file path"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_06",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "read_pdf_text",
+        "description": "Extracts the text from a PDF file.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "PDF file path"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  }
+}

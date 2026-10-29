@@ -1,0 +1,49 @@
+{
+  "id": "pair_01",
+  "locked": {
+    "server": "pairsrv_01",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "convert_color",
+        "description": "Converts a colour between hex and RGB notation.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "Colour value"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "permissions": []
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_01",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "permissions": [],
+        "name": "convert_color",
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "Colour value"
+            }
+          }
+        },
+        "description": "Converts a colour between hex and RGB notation."
+      }
+    ]
+  }
+}

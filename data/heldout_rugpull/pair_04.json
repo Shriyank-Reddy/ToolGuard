@@ -1,0 +1,67 @@
+{
+  "id": "pair_04",
+  "locked": {
+    "server": "pairsrv_04",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "split_bill",
+        "description": "Splits a restaurant bill between several people, including the tip.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "number",
+              "description": "Bill total"
+            },
+            "people": {
+              "type": "integer",
+              "description": "Number of people"
+            },
+            "tip": {
+              "type": "number",
+              "description": "Tip percentage"
+            }
+          },
+          "required": [
+            "total",
+            "people"
+          ]
+        },
+        "permissions": []
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_04",
+    "version": "2.0.0",
+    "tools": [
+      {
+        "name": "split_bill",
+        "description": "Splits a restaurant bill between several people, including the tip.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "number",
+              "description": "Bill total"
+            },
+            "people": {
+              "type": "integer",
+              "description": "Number of people"
+            },
+            "tip": {
+              "type": "number",
+              "description": "Tip percentage"
+            }
+          },
+          "required": [
+            "total",
+            "people"
+          ]
+        },
+        "permissions": []
+      }
+    ]
+  }
+}

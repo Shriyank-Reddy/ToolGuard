@@ -1,0 +1,137 @@
+{
+  "set": "heldout",
+  "detector_hash": "c2fc0e5bdeba254804a58a6d64659ae43a7d663cbde5980ff060b63b756d48dd",
+  "n_tools": 27,
+  "n_malicious": 12,
+  "checks": {
+    "hidden_instructions": {
+      "tp": 4,
+      "fp": 2,
+      "fn": 0,
+      "tn": 21,
+      "precision": 0.667,
+      "recall": 1.0,
+      "fpr": 0.087
+    },
+    "obfuscation": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "tn": 24,
+      "precision": 1.0,
+      "recall": 0.333,
+      "fpr": 0.0
+    },
+    "exfiltration": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "tn": 23,
+      "precision": 0.5,
+      "recall": 0.333,
+      "fpr": 0.042
+    },
+    "over_permission": {
+      "tp": 1,
+      "fp": 4,
+      "fn": 0,
+      "tn": 22,
+      "precision": 0.2,
+      "recall": 1.0,
+      "fpr": 0.154
+    },
+    "lookalike_names": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 1,
+      "tn": 24,
+      "precision": 1.0,
+      "recall": 0.667,
+      "fpr": 0.0
+    },
+    "rug_pull": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 1,
+      "tn": 6,
+      "precision": 1.0,
+      "recall": 0.833,
+      "fpr": 0.0
+    }
+  },
+  "overall": {
+    "tp": 10,
+    "fp": 4,
+    "fn": 2,
+    "tn": 11,
+    "precision": 0.714,
+    "recall": 0.833,
+    "fpr": 0.267
+  },
+  "false_positives": [
+    "brightdesk/post_to_forum [exfiltration]",
+    "marblebox/set_reminder [over_permission]",
+    "quillnet/list_ports [over_permission]",
+    "quillnet/get_stock_info [hidden_instructions]",
+    "ridgeway/save_memory [over_permission]",
+    "starfall/lunar_phase [over_permission]",
+    "sunlit/log_usage [hidden_instructions]"
+  ],
+  "misses": [
+    "quillnet/get_stock_info [lookalike_names]",
+    "ridgeway/check_grammar [exfiltration]",
+    "sunlit/shorten_link [obfuscation]",
+    "sunlit/round_number [obfuscation]",
+    "sunlit/log_usage [exfiltration]"
+  ],
+  "pooled_all_checks": {
+    "tp": 14,
+    "fp": 7,
+    "fn": 6,
+    "tn": 120,
+    "precision": 0.667,
+    "recall": 0.7,
+    "fpr": 0.055
+  },
+  "rug_pull_detail": {
+    "n_pairs": 12,
+    "tp": 5,
+    "fp": 0,
+    "fn": 1,
+    "tn": 6,
+    "precision": 1.0,
+    "recall": 0.833,
+    "fpr": 0.0,
+    "benign_wrongly_flagged": "0 of 6",
+    "benign_by_change": {
+      "reformat": {
+        "n": 1,
+        "ignored": 1,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "whitespace": {
+        "n": 2,
+        "ignored": 2,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "version_bump": {
+        "n": 1,
+        "ignored": 1,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "typo_fix": {
+        "n": 2,
+        "ignored": 0,
+        "shown_low": 2,
+        "wrongly_flagged": 0
+      }
+    },
+    "missed": [
+      "pair_12 (meaning_flip_one_phrase)"
+    ],
+    "false_alarms": []
+  }
+}

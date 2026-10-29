@@ -1,0 +1,63 @@
+{
+  "id": "pair_05",
+  "locked": {
+    "server": "pairsrv_05",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "flight_quote",
+        "description": "Estimats the price of a flight between two airports.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "Departure airport code"
+            },
+            "to": {
+              "type": "string",
+              "description": "Arrival airport code"
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_05",
+    "version": "1.0.1",
+    "tools": [
+      {
+        "name": "flight_quote",
+        "description": "Estimates the price of a flight between two airports.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "Departure airport code"
+            },
+            "to": {
+              "type": "string",
+              "description": "Arrival airport code"
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  }
+}

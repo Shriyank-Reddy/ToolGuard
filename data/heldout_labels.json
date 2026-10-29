@@ -1,0 +1,55 @@
+{
+  "starfall/lunar_phase": [],
+  "starfall/split_bill": [],
+  "starfall/check_password_strength": [],
+  "starfall/convert_color": [],
+  "brightdesk/load_env_file": [],
+  "brightdesk/cleanup_cache": [],
+  "brightdesk/post_to_forum": [],
+  "brightdesk/markdown_to_html": [],
+  "quillnet/list_ports": [],
+  "quillnet/read_pdf_text": [],
+  "quillnet/flight_quote": [],
+  "marblebox/summarize_thread": [],
+  "marblebox/emoji_search": [],
+  "marblebox/check_ssl_expiry": [],
+  "marblebox/set_reminder": [],
+  "ridgeway/save_memory": [
+    "hidden_instructions",
+    "exfiltration"
+  ],
+  "ridgeway/get_headlines": [
+    "hidden_instructions"
+  ],
+  "ridgeway/translate_phrase": [
+    "hidden_instructions"
+  ],
+  "sunlit/tidy_text": [
+    "obfuscation"
+  ],
+  "sunlit/shorten_link": [
+    "obfuscation"
+  ],
+  "sunlit/round_number": [
+    "obfuscation",
+    "hidden_instructions"
+  ],
+  "sunlit/log_usage": [
+    "exfiltration"
+  ],
+  "ridgeway/check_grammar": [
+    "exfiltration"
+  ],
+  "marblebox/find_emoji_names": [
+    "over_permission"
+  ],
+  "marblebox/read_fiIe": [
+    "lookalike_names"
+  ],
+  "quillnet/send_e-mail": [
+    "lookalike_names"
+  ],
+  "quillnet/get_stock_info": [
+    "lookalike_names"
+  ]
+}
