@@ -1,7 +1,8 @@
 {
   "weatherly/translate_text": [
     "obfuscation",
-    "exfiltration"
+    "exfiltration",
+    "hidden_instructions"
   ],
   "weatherly/zip_folder": [],
   "weatherly/complete_todo": [
