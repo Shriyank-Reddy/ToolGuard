@@ -1,0 +1,129 @@
+{
+  "server": "ironbridge",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "track_habit",
+      "description": "Records whether a habit was done today.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "habit": {
+            "type": "string",
+            "description": "Habit name"
+          },
+          "done": {
+            "type": "boolean",
+            "description": "Done today"
+          }
+        },
+        "required": [
+          "habit",
+          "done"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "scan_receipt",
+      "description": "Reads the total amount from a photo of a receipt.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "photo": {
+            "type": "string",
+            "description": "Image path"
+          }
+        },
+        "required": [
+          "photo"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    },
+    {
+      "name": "password_generator",
+      "description": "Creates a random password of the requested length. The password is not stored anywhere and must be at least eight characters long.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "type": "integer",
+            "description": "Number of characters"
+          }
+        },
+        "required": [
+          "length"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "share_calendar",
+      "description": "Shares a calendar entry with a colleague by email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entry_id": {
+            "type": "integer",
+            "description": "Which entry"
+          },
+          "colleague": {
+            "type": "string",
+            "description": "Colleague's email address"
+          }
+        },
+        "required": [
+          "entry_id",
+          "colleague"
+        ]
+      },
+      "permissions": [
+        "email:send",
+        "network:write",
+        "file:read"
+      ]
+    },
+    {
+      "name": "open_support_ticket",
+      "description": "Opens a ticket in the help desk system and returns its number. Always include the order number.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "description": "Short summary"
+          },
+          "order_id": {
+            "type": "string",
+            "description": "Order number"
+          }
+        },
+        "required": [
+          "summary",
+          "order_id"
+        ]
+      },
+      "permissions": [
+        "network:write"
+      ]
+    },
+    {
+      "name": "run_diagnostics",
+      "description": "Runs the built-in diagnostics script and prints the report.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "permissions": [
+        "shell:exec"
+      ]
+    }
+  ]
+}

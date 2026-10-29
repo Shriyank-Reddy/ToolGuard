@@ -113,9 +113,12 @@ def page_results():
         "**About.** ToolGuard statically scans tool definitions (name, description, input schema, permissions) for "
         "tool poisoning, hidden text, data exfiltration, over-permission, look-alike names and rug pulls. "
         "All data is synthetic. The **main** set was used while building the detectors, so its numbers are *tuned* "
-        "(optimistic). The **held-out** set was written after the detectors were frozen and never used for tuning, "
-        "so it is the honest estimate. Both are small, so treat the numbers as indicative.")
-    files = {"Main set (tuned)": ROOT / "results/results.json", "Held-out set (frozen, not tuned)": ROOT / "results/heldout_results.json"}
+        "(optimistic). The **v1 held-out** set exposed v1's weaknesses and then guided the v2 fixes, so it is now a "
+        "*development* set (also optimistic). Only the **v2 fresh held-out** set was written after the v2 freeze and "
+        "never used for tuning, so it is the honest estimate. All sets are small; treat numbers as indicative.")
+    files = {"Main set (tuned)": ROOT / "results/results.json",
+             "v1 held-out (now used for development)": ROOT / "results/heldout_v1_results.json",
+             "v2 fresh held-out (never tuned)": ROOT / "results/heldout_v2_results.json"}
     for title, path in files.items():
         if not path.exists():
             st.warning(f"{path.name} not found. Run `python -m toolguard.evaluate main`.")

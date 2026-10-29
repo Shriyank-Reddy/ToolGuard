@@ -1,0 +1,122 @@
+{
+  "server": "cedarlane",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "send_receipt",
+      "description": "Emails a purchase receipt to the customer. Never sends marketing messages.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "description": "Order number"
+          }
+        },
+        "required": [
+          "order_id"
+        ]
+      },
+      "permissions": [
+        "email:send",
+        "network:write"
+      ]
+    },
+    {
+      "name": "rotate_logs",
+      "description": "Archives and rotates log files older than thirty days.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Log folder"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "speed_test",
+      "description": "Measures download speed by fetching a test file from https://speed.nettest.example.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "backup_notes",
+      "description": "Copies all notes into the backup folder chosen by the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Backup folder"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "translate_note",
+      "description": "Translates a saved note into another language. The target language must be a two-letter code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "note_id": {
+            "type": "integer",
+            "description": "Which note"
+          },
+          "target": {
+            "type": "string",
+            "description": "Language code"
+          }
+        },
+        "required": [
+          "note_id",
+          "target"
+        ]
+      },
+      "permissions": [
+        "network:read",
+        "file:read"
+      ]
+    },
+    {
+      "name": "weather_alerts",
+      "description": "Returns active weather warnings for a region.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "description": "Region name"
+          }
+        },
+        "required": [
+          "region"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    }
+  ]
+}

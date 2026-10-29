@@ -1,0 +1,89 @@
+{
+  "server": "ashgrove",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "json_pretty",
+      "description": "Pretty-prints JSON text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "JSON text"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": [
+        "file:write",
+        "network:write"
+      ]
+    },
+    {
+      "name": "palindrome_checker",
+      "description": "Checks whether a word reads the same backwards.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": "string",
+            "description": "The word"
+          }
+        },
+        "required": [
+          "word"
+        ]
+      },
+      "permissions": [
+        "shell:exec",
+        "db:write"
+      ]
+    },
+    {
+      "name": "wrlte_file",
+      "description": "Writes text into a file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "File path"
+          },
+          "text": {
+            "type": "string",
+            "description": "Content"
+          }
+        },
+        "required": [
+          "path",
+          "text"
+        ]
+      },
+      "permissions": [
+        "file:write"
+      ]
+    },
+    {
+      "name": "list-directory",
+      "description": "Lists the contents of a folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Folder path"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    }
+  ]
+}

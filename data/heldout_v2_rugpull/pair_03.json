@@ -1,0 +1,53 @@
+{
+  "id": "pair_03",
+  "locked": {
+    "server": "pairsrv_03",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "check_dns",
+        "description": "Looks up the DNS records of a domain.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Domain name"
+            }
+          },
+          "required": [
+            "domain"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_03",
+    "version": "3.2.0",
+    "tools": [
+      {
+        "name": "check_dns",
+        "description": "Looks up the DNS records of a domain.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Domain name"
+            }
+          },
+          "required": [
+            "domain"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  }
+}

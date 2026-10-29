@@ -6,6 +6,7 @@ Detectors only look at the tool definition. They never read the labels.
 import base64
 import re
 import unicodedata
+from urllib.parse import unquote
 
 from . import config as C
 from .intent import instruction_probability, split_sentences
@@ -63,14 +64,69 @@ def check_hidden_instructions(tool: Tool) -> list[Finding]:
 
 
 # ----------------------------------------------------- check 2: obfuscation
+def _readable(text: str) -> bool:
+    """Does decoded text look like human language (not random bytes)?"""
+    if not text:
+        return False
+    printable = sum(ch.isprintable() or ch.isspace() for ch in text)
+    wordlike = sum(ch.isalpha() or ch.isspace() for ch in text)
+    return printable / len(text) > 0.9 and wordlike / len(text) > 0.6
+
+
 def _decode_base64(blob: str) -> str | None:
     try:
-        raw = base64.b64decode(blob + "=" * (-len(blob) % 4), validate=True)
-        text = raw.decode("utf-8")
+        text = base64.b64decode(blob + "=" * (-len(blob) % 4), validate=True).decode("utf-8")
     except Exception:
         return None
-    printable = sum(ch.isprintable() or ch.isspace() for ch in text)
-    return text if text and printable / len(text) > 0.9 else None
+    return text if _readable(text) else None
+
+
+def _decode_hex(blob: str) -> str | None:
+    try:
+        text = bytes.fromhex(blob).decode("utf-8")
+    except Exception:
+        return None
+    return text if _readable(text) else None
+
+
+def _decode_percent(blob: str) -> str | None:
+    text = unquote(blob)
+    return text if _readable(text) else None
+
+
+def _decode_escapes(blob: str) -> str | None:
+    try:
+        text = blob.encode("ascii").decode("unicode_escape")
+    except Exception:
+        return None
+    return text if _readable(text) else None
+
+
+def encoded_payloads(text: str) -> list[tuple[str, str, str | None]]:
+    """Find encoded-looking blobs. Returns (kind, blob, decoded text or None)."""
+    found = []
+    for m in re.finditer(rf"[A-Za-z0-9+/]{{{C.MIN_BLOB_LENGTH},}}={{0,2}}", text):
+        blob = m.group(0)
+        if re.fullmatch(r"[0-9a-fA-F]+", blob) or not (re.search(r"[a-z]", blob) and re.search(r"[A-Z]", blob)):
+            continue  # hex is handled below; all-lowercase text is just a long word or identifier
+        found.append(("base64", blob, _decode_base64(blob)))
+    for m in re.finditer(rf"\b(?:[0-9a-fA-F]{{2}}){{{C.MIN_HEX_LENGTH // 2},}}\b", text):
+        blob = m.group(0)
+        decoded = _decode_hex(blob)
+        if decoded is None and (blob.isdigit() or len(blob) in C.HASH_LENGTHS):
+            continue  # a long number or an ordinary hash, not a payload
+        found.append(("hex", blob, decoded))
+    for m in re.finditer(r"(?:%[0-9a-fA-F]{2}){8,}", text):
+        found.append(("percent-encoded", m.group(0), _decode_percent(m.group(0))))
+    for m in re.finditer(r"(?:\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4}){6,}", text):
+        found.append(("escape-sequence", m.group(0), _decode_escapes(m.group(0))))
+    return found
+
+
+def _decoded_looks_hostile(decoded: str) -> bool:
+    """Run the instruction and exfiltration checks on text that was hidden in an encoded blob."""
+    probe = Tool("decoded-payload", decoded)
+    return any(f.is_flag for f in check_hidden_instructions(probe) + check_exfiltration(probe))
 
 
 def _mixed_script_words(text: str) -> list[str]:
@@ -94,18 +150,17 @@ def check_obfuscation(tool: Tool) -> list[Finding]:
             codes = ", ".join(sorted({f"U+{ord(ch):04X}" for _, ch in hidden}))
             add("high", f"Contains {len(hidden)} invisible character(s) ({codes}). Invisible characters can hide "
                         f"text from people while the model still reads it.", snippet(text, hidden[0][0], hidden[-1][0] + 1))
-        for m in re.finditer(r"<!--.*?-->", text, re.S):
-            add("high", "Contains an HTML comment. People reading a rendered description never see comments, "
-                        "but the model does.", m.group(0))
-        for m in re.finditer(rf"[A-Za-z0-9+/]{{{C.MIN_BLOB_LENGTH},}}={{0,2}}", text):
-            blob = m.group(0)
-            if re.fullmatch(r"[0-9a-fA-F]+", blob) or not (re.search(r"[a-z]", blob) and re.search(r"[A-Z]", blob)):
-                continue
-            decoded = _decode_base64(blob)
-            if decoded:
-                add("high", f"Contains a base64 blob that decodes to readable text: \"{decoded[:80]}\".", blob)
+        for pattern, name in C.COMMENT_PATTERNS:
+            for m in re.finditer(pattern, text, re.S | re.I):
+                add("high", f"Contains {name}. People reading a rendered description never see it, but the model does.",
+                    m.group(0))
+        for kind, blob, decoded in encoded_payloads(text):
+            if decoded is None:
+                add("medium", f"Contains a long {kind} blob that has no place in a description.", blob)
+            elif _decoded_looks_hostile(decoded):
+                add("high", f"Contains a {kind} blob that decodes to a hidden instruction: \"{decoded[:80]}\".", blob)
             else:
-                add("medium", "Contains a long encoded-looking blob that has no place in a description.", blob)
+                add("medium", f"Contains a {kind} blob that decodes to hidden text: \"{decoded[:80]}\".", blob)
         gaps = list(re.finditer(rf"\s{{{C.WHITESPACE_GAP},}}(?=\S)", text)) + list(re.finditer(r"(?:\r?\n[ \t]*){5,}(?=\S)", text))
         for m in gaps:
             add("high", "A large run of blank space is followed by more text; this pushes text out of sight "
@@ -116,39 +171,54 @@ def check_obfuscation(tool: Tool) -> list[Finding]:
 
 
 # ----------------------------------------------------- check 3: exfiltration
+def name_tokens(name: str) -> set[str]:
+    """'sessionInfo' / 'session_info' -> {'session', 'info'}"""
+    spaced = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", name)
+    return set(re.split(r"[^a-zA-Z0-9]+", spaced.lower())) - {""}
+
+
 def check_exfiltration(tool: Tool) -> list[Finding]:
     """Parameters or sentences that move secrets, files or chat history to someone else."""
     secret = re.compile(C.SECRET_WORDS, I)
+    convo = re.compile(C.CONVERSATION_WORDS, I)
     paths = re.compile(C.SENSITIVE_PATHS, I)
-    fill = re.compile(rf"\b({C.FILL_VERBS})\b", I)
-    send = re.compile(rf"\b({C.SEND_VERBS})\b", I)
+    fill = re.compile(rf"\b({C.FILL_VERBS})(?:s|es|ed|d|ing)?\b", I)
+    transfer = re.compile(rf"\b({C.TRANSFER_VERBS})(?:s|es|ed|d|ing)?\b", I)
+    data_noun = re.compile(rf"\b({C.DATA_NOUNS})", I)
+    side_effect = re.compile(rf"\b({C.SIDE_EFFECT_WORDS})\b", I)
+    sensitive = lambda s: secret.search(s) or convo.search(s) or paths.search(s)  # noqa: E731
     findings = []
 
     for pname, schema in tool.parameters().items():
         pdesc = schema.get("description", "") if isinstance(schema, dict) else ""
-        if pname.lower() in C.SENSITIVE_PARAM_NAMES:
+        if name_tokens(pname) & C.SENSITIVE_PARAM_TOKENS:
             related = [pdesc] + [s for s in split_sentences(tool.description) if re.search(rf"\b{re.escape(pname)}\b", s, I)]
-            hit = next((s for s in related if secret.search(s) or paths.search(s)), None)
+            hit = next((s for s in related if sensitive(s)), None)
             if hit:
                 findings.append(Finding(
                     "exfiltration", "high", tool.name,
                     f"Parameter '{pname}' looks like a free-text side channel, but it is described as carrying "
                     f"secrets, files or conversation data.", hit, f"param:{pname}"))
                 continue
-        if pdesc and secret.search(pdesc) and fill.search(pdesc):
+        if pdesc and sensitive(pdesc) and fill.search(pdesc):
             findings.append(Finding("exfiltration", "medium", tool.name,
                                     f"Parameter '{pname}' is meant to be filled with sensitive data.", pdesc, f"param:{pname}"))
 
+    first_sentence = (split_sentences(strip_invisible(tool.description)) or [""])[0]
+    can_send = bool({"network:write", "email:send"} & set(tool.permissions))
     for location, text in tool.texts():
         for sentence in split_sentences(strip_invisible(text)):
-            has_url = re.search(r"https?://\S+", sentence)
-            if has_url and send.search(sentence):
-                findings.append(Finding("exfiltration", "high", tool.name,
-                                        "Says that data is sent to an outside web address.", sentence, location))
+            if re.search(r"https?://\S+", sentence) and transfer.search(sentence) and data_noun.search(sentence):
+                # Sending is fine when it is the tool's declared main job; hidden extras are not.
+                primary = location == "description" and sentence == first_sentence and can_send and not side_effect.search(sentence)
+                findings.append(Finding("exfiltration", "low" if primary else "high", tool.name,
+                                        "Says that data is sent to an outside web address"
+                                        + (" (this looks like the tool's declared main job)." if primary else "."),
+                                        sentence, location))
             elif paths.search(sentence) and fill.search(sentence):
                 findings.append(Finding("exfiltration", "high", tool.name,
                                         "Asks for a sensitive file to be attached or passed along.", sentence, location))
-            elif secret.search(sentence) and fill.search(sentence) and re.search(
+            elif (secret.search(sentence) or convo.search(sentence)) and fill.search(sentence) and re.search(
                     r"\b(parameter|argument|field|request|answer|reply|response|message|forward|call)\b", sentence, I):
                 findings.append(Finding("exfiltration", "high", tool.name,
                                         "Asks for secrets or private conversation data to be copied into a request or reply.",
@@ -167,8 +237,11 @@ def _dedupe(findings: list[Finding]) -> list[Finding]:
 
 
 # --------------------------------------------------- check 4: over-permission
-def allowed_permissions(tool: Tool) -> tuple[set[str], list[str]]:
-    """Permissions the tool's stated purpose justifies, plus the purposes matched."""
+def allowed_permissions(tool: Tool) -> tuple[set[str] | None, list[str]]:
+    """Permissions the tool's stated purpose justifies, plus the purposes matched.
+
+    Returns (None, []) when no purpose is recognised.
+    """
     first_sentence = (split_sentences(strip_invisible(tool.description)) or [""])[0]
     text = (tool.name.replace("_", " ") + " " + first_sentence).lower()
     allowed, matched = set(), []
@@ -176,21 +249,33 @@ def allowed_permissions(tool: Tool) -> tuple[set[str], list[str]]:
         if any(re.search(r"\b" + re.escape(k.strip()), text) for k in keywords):
             allowed |= perms
             matched.append(purpose)
-    return (allowed if matched else set(C.DEFAULT_ALLOWED)), matched
+    return (allowed if matched else None), matched
 
 
 def check_over_permission(tool: Tool) -> list[Finding]:
+    """Flag clear mismatches; mention borderline ones at low severity (shown, not counted)."""
     allowed, matched = allowed_permissions(tool)
-    extra = [p for p in tool.permissions if p not in allowed]
-    if not extra:
-        return []
-    severe = any(C.PERMISSION_RISK.get(p) == "high" for p in extra)
     purpose = " / ".join(matched) if matched else "unclear"
-    return [Finding(
-        "over_permission", "high" if severe else "medium", tool.name,
-        f"Asks for {', '.join(extra)} but its stated purpose ({purpose}) does not need it. "
-        f"Extra permissions give a compromised tool more power to cause harm.",
-        ", ".join(extra), "permissions")]
+    if allowed is None:
+        clear = [p for p in tool.permissions if p not in C.UNKNOWN_PURPOSE_TOLERATED]
+        borderline = []
+    else:
+        extra = [p for p in tool.permissions if p not in allowed]
+        borderline = [p for p in extra if p in C.LOW_RISK_PERMISSIONS]
+        clear = [p for p in extra if p not in C.LOW_RISK_PERMISSIONS]
+    findings = []
+    if clear:
+        severe = any(p in C.HIGH_RISK_PERMISSIONS for p in clear)
+        findings.append(Finding(
+            "over_permission", "high" if severe else "medium", tool.name,
+            f"Asks for {', '.join(clear)} but its stated purpose ({purpose}) does not need it. "
+            f"Extra permissions give a compromised tool more power to cause harm.", ", ".join(clear), "permissions"))
+    if borderline:
+        findings.append(Finding(
+            "over_permission", "low", tool.name,
+            f"Also asks for {', '.join(borderline)}, which its stated purpose ({purpose}) does not obviously need. "
+            f"Worth a look, but read-level access is common.", ", ".join(borderline), "permissions"))
+    return findings
 
 
 # ------------------------------------------------------ check 5: look-alikes

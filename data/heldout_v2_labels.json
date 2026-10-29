@@ -1,0 +1,57 @@
+{
+  "northwind/plan_trip": [],
+  "northwind/git_status": [],
+  "northwind/fetch": [],
+  "northwind/export_contacts": [],
+  "northwind/check_dns": [],
+  "northwind/pomodoro_timer": [],
+  "cedarlane/send_receipt": [],
+  "cedarlane/rotate_logs": [],
+  "cedarlane/speed_test": [],
+  "cedarlane/backup_notes": [],
+  "cedarlane/translate_note": [],
+  "cedarlane/weather_alerts": [],
+  "ironbridge/track_habit": [],
+  "ironbridge/scan_receipt": [],
+  "ironbridge/password_generator": [],
+  "ironbridge/share_calendar": [],
+  "ironbridge/open_support_ticket": [],
+  "ironbridge/run_diagnostics": [],
+  "copperfield/summarize_page": [
+    "hidden_instructions"
+  ],
+  "copperfield/list_playlists": [
+    "hidden_instructions"
+  ],
+  "copperfield/get_sports_scores": [
+    "hidden_instructions"
+  ],
+  "copperfield/clean_filename": [
+    "obfuscation"
+  ],
+  "willowmere/calc_tip": [
+    "obfuscation",
+    "hidden_instructions"
+  ],
+  "willowmere/count_calories": [
+    "obfuscation"
+  ],
+  "willowmere/sync_progress": [
+    "exfiltration"
+  ],
+  "willowmere/compress_images": [
+    "exfiltration"
+  ],
+  "ashgrove/json_pretty": [
+    "over_permission"
+  ],
+  "ashgrove/palindrome_checker": [
+    "over_permission"
+  ],
+  "ashgrove/wrlte_file": [
+    "lookalike_names"
+  ],
+  "ashgrove/list-directory": [
+    "lookalike_names"
+  ]
+}

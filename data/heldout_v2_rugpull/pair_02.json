@@ -1,0 +1,53 @@
+{
+  "id": "pair_02",
+  "locked": {
+    "server": "pairsrv_02",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "weather_alerts",
+        "description": "Returns active weather warnings for a region.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "region": {
+              "type": "string",
+              "description": "Region name"
+            }
+          },
+          "required": [
+            "region"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_02",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "weather_alerts",
+        "description": "Returns\t active\n   weather warnings for a region.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "region": {
+              "type": "string",
+              "description": "Region name"
+            }
+          },
+          "required": [
+            "region"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  }
+}

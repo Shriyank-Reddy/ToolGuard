@@ -1,0 +1,53 @@
+{
+  "id": "pair_05",
+  "locked": {
+    "server": "pairsrv_05",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "scan_receipt",
+        "description": "Reads the total amount from a photo of a receipt",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "photo": {
+              "type": "string",
+              "description": "Image path"
+            }
+          },
+          "required": [
+            "photo"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_05",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "scan_receipt",
+        "description": "Reads the total amount from a photo of a receipt.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "photo": {
+              "type": "string",
+              "description": "Image path"
+            }
+          },
+          "required": [
+            "photo"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  }
+}

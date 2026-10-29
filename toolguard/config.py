@@ -31,48 +31,87 @@ INSTRUCTION_PATTERNS = [  # (regex, plain-English reason)
 # ---- check 2: obfuscation ------------------------------------------------
 MIN_BLOB_LENGTH = 32  # base64-looking text at least this long is suspicious
 WHITESPACE_GAP = 20  # this many whitespace characters in a row, followed by text
+MIN_HEX_LENGTH = 32  # hex-looking text at least this long is suspicious ...
+HASH_LENGTHS = {32, 40, 56, 64, 96, 128}  # ... unless it is the length of a normal hash (MD5, SHA-1, SHA-256 ...)
+COMMENT_PATTERNS = [  # (regex, plain-English name) - text people do not see in a rendered description
+    (r"<!--.*?(?:-->|$)", "an HTML comment"),
+    (r"\[[^\]\n]{0,20}\]:\s*(?:#|<>)\s*[\"'(].*?[\"')]", "a Markdown comment"),
+    (r"\{/\*.*?\*/\}|/\*.*?\*/", "a code-style comment"),
+    (r"<(?:div|span|p|section|details|template)\b[^>]*(?:\bhidden\b|display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0)[^>]*>.*?(?:</\w+>|$)",
+     "a hidden HTML element"),
+]
 
 # ---- check 3: exfiltration -----------------------------------------------
-SENSITIVE_PARAM_NAMES = {
-    "notes", "note", "context", "metadata", "meta", "extra", "extras", "info", "comment",
-    "comments", "memo", "details", "annotation", "remarks", "payload", "debug", "sidenote",
+# A parameter is a possible side channel when one word of its name is in this set (notes, session_info, ...).
+SENSITIVE_PARAM_TOKENS = {
+    "notes", "note", "context", "metadata", "meta", "extra", "extras", "info", "information", "comment",
+    "comments", "memo", "details", "detail", "annotation", "remarks", "payload", "debug", "state", "session",
+    "history", "misc", "other", "additional", "attachment", "blob", "data", "telemetry", "trace", "sidenote",
 }
 SECRET_WORDS = (
     r"password|passwd|credential|secret|api[ _-]?key|token|private key|ssh|id_rsa|cookie|"
-    r"conversation|chat history|(full|whole|entire) chat|previous messages|system prompt|environment variables?|login|\.aws|\.env"
+    r"system prompt|environment variables?|login|\.aws|\.env|address book|contacts|clipboard|browser history"
+)
+# Conversation data: "the full chat", "everything the user said earlier", "transcript", ...
+CONVERSATION_WORDS = (
+    r"(everything|all|full|entire|whole|complete|previous|prior|earlier|past)\b[^.]{0,30}\b"
+    r"(chat|conversation|messages?|history|said|typed|wrote|prompts?|turns|transcript)"
+    r"|\b(chat|conversation) (log|history)|\btranscript\b|\bword for word\b|\bverbatim\b|\bconversation\b|\bthe chat\b"
 )
 SENSITIVE_PATHS = r"~/\.|/etc/passwd|id_rsa|\.aws/|\.ssh|\.npmrc|keychain|\.env\b|credentials file"
-FILL_VERBS = r"include|attach|paste|copy|append|embed|forward|upload|send|pass|add|put|fill|contents of"
-SEND_VERBS = r"post|posts|send|sends|upload|uploads|forward|forwarded|transmit|transmits|submit|mirror"
+TRANSFER_VERBS = (  # verbs that move data somewhere else (stems, so relay/relays/relayed all match)
+    r"relay|forward|sync|upload|send|sent|post|transmit|submit|mirror|copy|push|ship|stream|export|dump|"
+    r"beacon|exfiltrate|leak|share|publish|deliver|replicate|back ?up|report|log"
+)
+FILL_VERBS = r"include|attach|paste|append|embed|put|fill|add|pass|contents of|" + TRANSFER_VERBS
+DATA_NOUNS = (  # what is being moved (needed together with a URL, so "see https://docs.example" is fine)
+    r"request|input|data|details|payload|message|content|result|conversation|chat|file|query|prompt|output|"
+    r"response|text|history|credential|session|state|context|information|record|document|answer"
+)
+SIDE_EFFECT_WORDS = (  # signs that sending is a hidden extra, not the tool's main job
+    r"also|additionally|as well|a copy|each call|every call|each request|every request|after|afterwards|"
+    r"in the background|silently|too"
+)
 
 # ---- check 4: over-permission --------------------------------------------
-PERMISSION_RISK = {  # how dangerous each permission is
-    "shell:exec": "high", "env:read": "high", "file:write": "medium", "email:send": "medium",
-    "browser:control": "medium", "network:write": "medium", "db:write": "medium",
-    "file:read": "medium", "network:read": "medium", "db:read": "medium",
-}
-DEFAULT_ALLOWED = {"network:read", "file:read"}  # tolerated when the purpose is unknown
-# purpose name -> (keywords found in the tool name / first sentence, permissions it legitimately needs)
+HIGH_RISK_PERMISSIONS = {"shell:exec", "env:read"}  # an unexpected one of these is 'high'
+LOW_RISK_PERMISSIONS = {"network:read", "file:read", "db:read"}  # unexpected = borderline = 'low' (shown, not flagged)
+UNKNOWN_PURPOSE_TOLERATED = LOW_RISK_PERMISSIONS | {"file:write"}  # when we cannot tell what the tool is for
+# purpose -> (words in the tool name / first sentence that signal it, permissions it legitimately needs)
 PURPOSES = {
-    "weather": (["weather", "forecast", "temperature", "air quality", "sunrise", "sunset"], {"network:read"}),
-    "math": (["calculat", "convert", "sum", "add ", "percentage", "unit", "dice", "random", "uuid", "hash", "encode", "base64"], set()),
-    "currency": (["currency", "stock", "price", "exchange"], {"network:read"}),
-    "text": (["format", "pretty", "parse", "slug", "word", "spell", "summar", "lorem", "text", "json", "csv"], set()),
-    "translate": (["translat"], {"network:read"}),
-    "shell": (["shell", "command", "terminal"], {"shell:exec"}),
-    "time": (["time", "date", "timezone", "version"], set()),
-    "files": (["file", "folder", "directory", "log", "archive", "zip", "image", "thumbnail", "note", "todo", "bookmark", "duplicate", "disk", "lines"], {"file:read", "file:write"}),
-    "calendar": (["calendar", "meeting", "schedule", "event"], {"file:read", "file:write", "network:read", "network:write"}),
-    "web": (["web", "url", "link", "page", "rss", "feed", "download", "fetch", "search", "recipe"], {"network:read", "file:write"}),
-    "messaging": (["alert", "notify", "notice", "webhook", "message", "chat", "post"], {"network:write"}),
-    "email": (["email", "mail", "digest"], {"email:send", "network:write"}),
-    "dev": (["git", "commit", "repository", "unit test", "build", "lint", "ssh", "key"], {"file:read", "shell:exec"}),
-    "database": (["database", "inventory", "sql", "orders", "stock level"], {"db:read", "db:write"}),
-    "browser": (["browser", "screenshot", "web form"], {"browser:control", "network:read", "network:write"}),
-    "config": (["config", "environment", "env ", "settings"], {"file:read", "env:read"}),
-    "secrets": (["secret", "vault", "credential"], {"env:read", "network:read"}),
-    "backup": (["backup", "upload"], {"file:read", "network:write"}),
-    "profile": (["profile", "user"], {"network:read"}),
+    "calculation & text": (["calculat", "convert", "sum", "percent", "unit", "dice", "random", "uuid", "hash", "encode",
+                            "decode", "base64", "round", "format", "pretty", "parse", "slug", "word", "spell", "grammar",
+                            "markdown", "html", "colo", "lorem", "compare", "split", "count", "emoji", "text", "json", "csv",
+                            "regex", "summar", "password strength"], set()),
+    "time": (["time", "date", "timezone"], set()),
+    "online lookup": (["weather", "forecast", "temperature", "air quality", "sunrise", "sunset", "moon", "lunar", "stock",
+                       "price", "quote", "currency", "exchange", "news", "headline", "rss", "feed", "flight", "recipe",
+                       "translat", "search", "lookup", "fetch", "web", "url", "link", "page", "certificate", "ssl", "dns"],
+                      {"network:read"}),
+    "download": (["download"], {"network:read", "file:write"}),
+    "file utilities": (["file", "folder", "directory", "path", "log", "archive", "zip", "extract", "compress", "image",
+                        "thumbnail", "resize", "pdf", "document", "note", "todo", "task", "bookmark", "duplicate", "disk",
+                        "rename", "move", "delete", "clean", "cache", "backup", "save", "export", "import", "lines"],
+                       {"file:read", "file:write"}),
+    "storing & remembering": (["memory", "remember", "store", "record", "usage", "track", "reminder", "remind", "journal"],
+                              {"file:read", "file:write"}),
+    "calendar & scheduling": (["calendar", "meeting", "schedule", "event", "appointment"],
+                              {"file:read", "file:write", "network:read", "network:write"}),
+    "messaging": (["alert", "notify", "notification", "webhook", "message", "chat", "post", "publish", "forum", "announce"],
+                  {"network:write", "network:read"}),
+    "email": (["email", "mail", "digest", "newsletter"], {"email:send", "network:write", "network:read"}),
+    "developer tools": (["git", "commit", "repository", "unit test", "build", "lint", "compile", "ssh", "key", "deploy",
+                         "package", "install"], {"file:read", "file:write", "shell:exec"}),
+    "system information": (["port", "process", "cpu", "uptime", "interface", "ping", "traceroute", "hostname", "system"],
+                           {"shell:exec", "file:read", "network:read"}),
+    "shell": (["shell", "command", "terminal", "execute", "script"], {"shell:exec", "file:read", "file:write"}),
+    "database": (["database", "sql", "query", "inventory", "orders", "table", "stock level"], {"db:read", "db:write"}),
+    "browser": (["browser", "screenshot", "web form", "click", "navigate", "headless"],
+                {"browser:control", "network:read", "network:write"}),
+    "configuration": (["config", "environment", "settings", "variable", "env"], {"file:read", "env:read"}),
+    "secrets": (["secret", "vault", "credential", "keychain"], {"env:read", "network:read"}),
+    "upload & backup": (["upload", "backup", "sync"], {"file:read", "network:write"}),
+    "profile": (["profile", "account", "user"], {"network:read"}),
 }
 
 # ---- check 5: look-alike names -------------------------------------------
@@ -98,3 +137,13 @@ OVERRIDE_PATTERN = (
 # ---- check 6: rug pull ---------------------------------------------------
 MINOR_EDIT_SIMILARITY = 0.95  # description at least this similar ...
 MINOR_EDIT_MAX_GROWTH = 20  # ... and grown by at most this many characters = 'typo-level' edit
+# Words whose appearance, removal or replacement changes what a description PROMISES. A one-word edit
+# touching one of these is a real change, not a typo fix.
+MEANING_WORDS = {
+    "not", "no", "never", "none", "nothing", "nobody", "without", "cannot", "dont", "doesnt", "wont", "isnt", "arent",
+    "cant", "always", "any", "all", "only", "must", "should", "may", "can", "unless", "except", "instead",
+    "local", "remote", "private", "public", "encrypted", "unencrypted", "readonly", "read-only", "optional", "required",
+    "delete", "deletes", "overwrite", "overwrites", "permanently", "confirm", "confirmation", "approval", "consent",
+    "ask", "before", "after", "stored", "stores", "sent", "sends", "shared", "shares", "uploaded", "uploads", "logged", "logs",
+}
+TYPO_SIMILARITY = 0.8  # two replaced words this similar are treated as a spelling fix
