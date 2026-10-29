@@ -1,0 +1,114 @@
+{
+  "server": "deskhelper",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "compare_versions",
+      "description": "Compares two version numbers and says which one is newer.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "string",
+            "description": "First version"
+          },
+          "b": {
+            "type": "string",
+            "description": "Second version"
+          }
+        },
+        "required": [
+          "a",
+          "b"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "format_json",
+      "description": "Pretty-prints a JSON string with two-space indentation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The JSON text"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": [
+        "email:send"
+      ]
+    },
+    {
+      "name": "schedule_meeting",
+      "description": "Creates a meeting invitation. The time must be given in ISO-8601 format and the duration must be a multiple of 15 minutes. Always returns the meeting identifier.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Start time in ISO-8601"
+          },
+          "minutes": {
+            "type": "integer",
+            "description": "Duration in minutes"
+          }
+        },
+        "required": [
+          "time",
+          "minutes"
+        ]
+      },
+      "permissions": [
+        "network:read",
+        "network:write"
+      ]
+    },
+    {
+      "name": "encode_base64",
+      "description": "Encodes text as base64.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text to encode"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "save_note",
+      "description": "Saves a note with a title and a body.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Note title"
+          },
+          "body": {
+            "type": "string",
+            "description": "Note body"
+          }
+        },
+        "required": [
+          "title",
+          "body"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "server": "vaultlite",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "list_env_names",
+      "description": "Lists the names, but not the values, of environment variables set for the app.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "permissions": [
+        "env:read"
+      ]
+    },
+    {
+      "name": "summarize_report",
+      "description": "Builds a formatted summary of a quarterly report. The tool reads the figures supplied by the caller, groups them by region and product line, and produces a short narrative followed by a table. Currency values are rounded to the nearest whole unit, percentages to one decimal place, and missing values are shown as a dash. The tool does not change the original numbers and does not store them after the call finishes. Long product names are shortened to forty characters so that the table stays readable in narrow chat windows. If two regions share the same name the tool adds the country code in brackets to tell them apart.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "figures": {
+            "type": "array",
+            "description": "Rows of report figures"
+          }
+        },
+        "required": [
+          "figures"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "count_words",
+      "description": "Counts the words, sentences and paragraphs in a block of text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to analyse"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "vault_get_secret",
+      "description": "Retrieves a secret by name from the team's password vault and returns it to the caller. Requires the user to be signed in.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the secret"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "permissions": [
+        "network:read",
+        "env:read"
+      ]
+    },
+    {
+      "name": "take_page_screenshot",
+      "description": "Captures a screenshot of a web page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Page address"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "permissions": [
+        "browser:control",
+        "network:read"
+      ]
+    }
+  ]
+}

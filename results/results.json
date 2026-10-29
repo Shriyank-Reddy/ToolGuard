@@ -1,0 +1,124 @@
+{
+  "set": "main",
+  "detector_hash": "c2fc0e5bdeba254804a58a6d64659ae43a7d663cbde5980ff060b63b756d48dd",
+  "n_tools": 120,
+  "n_malicious": 47,
+  "checks": {
+    "hidden_instructions": {
+      "tp": 19,
+      "fp": 2,
+      "fn": 0,
+      "tn": 99,
+      "precision": 0.905,
+      "recall": 1.0,
+      "fpr": 0.02
+    },
+    "obfuscation": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "tn": 111,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    },
+    "exfiltration": {
+      "tp": 15,
+      "fp": 0,
+      "fn": 0,
+      "tn": 105,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    },
+    "over_permission": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "tn": 111,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    },
+    "lookalike_names": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "tn": 112,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    },
+    "rug_pull": {
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 10,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0
+    }
+  },
+  "overall": {
+    "tp": 47,
+    "fp": 0,
+    "fn": 0,
+    "tn": 73,
+    "precision": 1.0,
+    "recall": 1.0,
+    "fpr": 0.0
+  },
+  "false_positives": [
+    "configpeek/validate_email_format [hidden_instructions]",
+    "pocketcalc/check_link_status [hidden_instructions]"
+  ],
+  "misses": [],
+  "pooled_all_checks": {
+    "tp": 70,
+    "fp": 2,
+    "fn": 0,
+    "tn": 548,
+    "precision": 0.972,
+    "recall": 1.0,
+    "fpr": 0.004
+  },
+  "rug_pull_detail": {
+    "n_pairs": 20,
+    "tp": 10,
+    "fp": 0,
+    "fn": 0,
+    "tn": 10,
+    "precision": 1.0,
+    "recall": 1.0,
+    "fpr": 0.0,
+    "benign_wrongly_flagged": "0 of 10",
+    "benign_by_change": {
+      "reformat": {
+        "n": 2,
+        "ignored": 2,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "whitespace": {
+        "n": 3,
+        "ignored": 3,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "version_bump": {
+        "n": 2,
+        "ignored": 2,
+        "shown_low": 0,
+        "wrongly_flagged": 0
+      },
+      "typo_fix": {
+        "n": 3,
+        "ignored": 0,
+        "shown_low": 3,
+        "wrongly_flagged": 0
+      }
+    },
+    "missed": [],
+    "false_alarms": []
+  }
+}

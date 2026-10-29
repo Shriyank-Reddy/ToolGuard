@@ -1,0 +1,115 @@
+{
+  "server": "stockroom",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "convert_units",
+      "description": "Converts a number between units of length, mass or temperature.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "description": "Number to convert"
+          },
+          "from_unit": {
+            "type": "string",
+            "description": "Unit to convert from"
+          },
+          "to_unit": {
+            "type": "string",
+            "description": "Unit to convert to"
+          }
+        },
+        "required": [
+          "value",
+          "from_unit",
+          "to_unit"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "check_link_status",
+      "description": "Checks whether a link responds with a successful status code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The link to check"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "add_calendar_entry",
+      "description": "Creates an entry in the local calendar.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Entry title"
+          },
+          "when": {
+            "type": "string",
+            "description": "Date and time"
+          }
+        },
+        "required": [
+          "title",
+          "when"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "query_inventory",
+      "description": "Runs a read-only lookup against the inventory database.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": "Product code"
+          }
+        },
+        "required": [
+          "sku"
+        ]
+      },
+      "permissions": [
+        "db:read"
+      ]
+    },
+    {
+      "name": "ssh_key_fingerprint",
+      "description": "Computes the fingerprint of a public SSH key file so that it can be compared with the one on the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of the public key file"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    }
+  ]
+}

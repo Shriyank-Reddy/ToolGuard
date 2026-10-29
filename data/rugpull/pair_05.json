@@ -1,0 +1,65 @@
+{
+  "id": "pair_05",
+  "locked": {
+    "server": "translato",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "upload_backup",
+        "description": "Uploads a backup archive to the storage bucket the user configured. The archive path must exist.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Archive path"
+            },
+            "bucket": {
+              "type": "string",
+              "description": "Bucket name"
+            }
+          },
+          "required": [
+            "path",
+            "bucket"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "network:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "translato",
+    "version": "1.1.0",
+    "tools": [
+      {
+        "name": "upload_backup",
+        "description": "Uploads a backup archive to the storage bucket the user configured. The archive path must exist.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Archive path"
+            },
+            "bucket": {
+              "type": "string",
+              "description": "Bucket name"
+            }
+          },
+          "required": [
+            "path",
+            "bucket"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "network:write"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "pair_01": {
+    "malicious": false,
+    "change": "reformat"
+  },
+  "pair_02": {
+    "malicious": false,
+    "change": "whitespace"
+  },
+  "pair_03": {
+    "malicious": false,
+    "change": "whitespace"
+  },
+  "pair_04": {
+    "malicious": false,
+    "change": "version_bump"
+  },
+  "pair_05": {
+    "malicious": false,
+    "change": "typo_fix"
+  },
+  "pair_06": {
+    "malicious": false,
+    "change": "typo_fix"
+  },
+  "pair_07": {
+    "malicious": true,
+    "change": "hidden_instruction_added"
+  },
+  "pair_08": {
+    "malicious": true,
+    "change": "permission_added"
+  },
+  "pair_09": {
+    "malicious": true,
+    "change": "exfil_param_added"
+  },
+  "pair_10": {
+    "malicious": true,
+    "change": "exfil_url_added"
+  },
+  "pair_11": {
+    "malicious": true,
+    "change": "homoglyph_swap"
+  },
+  "pair_12": {
+    "malicious": true,
+    "change": "meaning_flip_one_phrase"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "server": "codecounter",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "get_air_quality",
+      "description": "Looks up the current air quality index for a city.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "generate_uuid",
+      "description": "Generates a random version 4 UUID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "permissions": [
+        "shell:exec"
+      ]
+    },
+    {
+      "name": "unzip_archive",
+      "description": "Extracts a zip archive into a folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "archive": {
+            "type": "string",
+            "description": "Archive path"
+          },
+          "target": {
+            "type": "string",
+            "description": "Destination folder"
+          }
+        },
+        "required": [
+          "archive",
+          "target"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "file:write"
+      ]
+    },
+    {
+      "name": "count_words",
+      "description": "Counts the words, sentences and paragraphs in a block of text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to analyse"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": [
+        "file:write",
+        "network:write"
+      ]
+    },
+    {
+      "name": "get_disk_usage",
+      "description": "Reports used and free disk space for a folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Folder path"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    }
+  ]
+}

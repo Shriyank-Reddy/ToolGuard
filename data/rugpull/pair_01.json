@@ -1,0 +1,61 @@
+{
+  "id": "pair_01",
+  "locked": {
+    "server": "gitbuddy",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "get_forecast",
+        "description": "Reutrns a five-day weather forecast for a city.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name, for example Lisbon"
+            },
+            "units": {
+              "type": "string",
+              "description": "Either metric or imperial"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "gitbuddy",
+    "version": "1.0.1",
+    "tools": [
+      {
+        "name": "get_forecast",
+        "description": "Returns a five-day weather forecast for a city.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name, for example Lisbon"
+            },
+            "units": {
+              "type": "string",
+              "description": "Either metric or imperial"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  }
+}

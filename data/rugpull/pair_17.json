@@ -1,0 +1,55 @@
+{
+  "id": "pair_17",
+  "locked": {
+    "server": "webcam-lab",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "complete_todo",
+        "description": "Marks a task on the to-do list as done.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "integer",
+              "description": "Identifier of the task"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "webcam-lab",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "permissions": [
+          "file:read",
+          "file:write"
+        ],
+        "inputSchema": {
+          "required": [
+            "task_id"
+          ],
+          "properties": {
+            "task_id": {
+              "type": "integer",
+              "description": "Identifier of the task"
+            }
+          },
+          "type": "object"
+        },
+        "description": "Marks a task on the to-do list as done.",
+        "name": "complete_todo"
+      }
+    ]
+  }
+}

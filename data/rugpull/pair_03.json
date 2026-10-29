@@ -1,0 +1,53 @@
+{
+  "id": "pair_03",
+  "locked": {
+    "server": "marketpulse",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "list_calendar_entries",
+        "description": "Lists the calendar entries for a given day.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "day": {
+              "type": "string",
+              "description": "The day"
+            }
+          },
+          "required": [
+            "day"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "marketpulse",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "list_calendar_entries",
+        "description": "  Lists  the calendar entries for a given day.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "day": {
+              "type": "string",
+              "description": "The day"
+            }
+          },
+          "required": [
+            "day"
+          ]
+        },
+        "permissions": [
+          "file:read"
+        ]
+      }
+    ]
+  }
+}

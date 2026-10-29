@@ -1,0 +1,49 @@
+{
+  "id": "pair_02",
+  "locked": {
+    "server": "pairsrv_02",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "emoji_search",
+        "description": "Finds emoji by keyword. Always returns at most ten matches.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string",
+              "description": "Word to look for"
+            }
+          },
+          "required": [
+            "keyword"
+          ]
+        },
+        "permissions": []
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_02",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "emoji_search",
+        "description": "Finds emoji by keyword. Always returns at most ten matches.\t\n  ",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "keyword": {
+              "type": "string",
+              "description": "Word to look for"
+            }
+          },
+          "required": [
+            "keyword"
+          ]
+        },
+        "permissions": []
+      }
+    ]
+  }
+}

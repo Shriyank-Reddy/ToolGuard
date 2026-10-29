@@ -1,0 +1,85 @@
+{
+  "server": "starfall",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "lunar_phase",
+      "description": "Returns the moon phase for a date.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD"
+          }
+        },
+        "required": [
+          "date"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "split_bill",
+      "description": "Splits a restaurant bill between several people, including the tip.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Bill total"
+          },
+          "people": {
+            "type": "integer",
+            "description": "Number of people"
+          },
+          "tip": {
+            "type": "number",
+            "description": "Tip percentage"
+          }
+        },
+        "required": [
+          "total",
+          "people"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "check_password_strength",
+      "description": "Scores how strong a password is by its length and variety of characters. The password is never stored or sent anywhere.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "The password to score"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "convert_color",
+      "description": "Converts a colour between hex and RGB notation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Colour value"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "permissions": []
+    }
+  ]
+}

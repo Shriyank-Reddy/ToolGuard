@@ -1,0 +1,53 @@
+{
+  "id": "pair_03",
+  "locked": {
+    "server": "pairsrv_03",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "check_ssl_expiry",
+        "description": "Reports when the certificate of a website expires.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "Website host name"
+            }
+          },
+          "required": [
+            "host"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "pairsrv_03",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "check_ssl_expiry",
+        "description": "Reports\t when\n the certificate of a website expires.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "Website host name"
+            }
+          },
+          "required": [
+            "host"
+          ]
+        },
+        "permissions": [
+          "network:read"
+        ]
+      }
+    ]
+  }
+}
