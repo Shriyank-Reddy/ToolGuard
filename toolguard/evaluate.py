@@ -1,9 +1,10 @@
 """Measure the detectors against ground-truth labels.
 
 This is the ONLY module that reads label files. Usage:
-    python -m toolguard.evaluate main       # tuned set  -> results/results.json
+    python -m toolguard.evaluate main       # tuned set        -> results/results.json
+    python -m toolguard.evaluate dev        # v1 held-out (development) -> results/heldout_v1_results.json
     python -m toolguard.evaluate freeze     # record a hash of the detector code
-    python -m toolguard.evaluate heldout    # held-out   -> results/heldout_results.json
+    python -m toolguard.evaluate heldout    # v2 fresh held-out -> results/heldout_v2_results.json
     python -m toolguard.evaluate chart      # results/comparison.png
 """
 import hashlib
@@ -23,11 +24,18 @@ DETECTOR_FILES = ["config.py", "checks.py", "intent.py", "intent_data.py", "lock
 
 SETS = {
     "main": dict(servers="data/servers", labels="data/labels.json", pairs="data/rugpull",
-                 pair_labels="data/rugpull_labels.json", out="results.json"),
-    "heldout": dict(servers="data/heldout", labels="data/heldout_labels.json", pairs="data/heldout_rugpull",
-                    pair_labels="data/heldout_rugpull_labels.json", out="heldout_results.json"),
+                 pair_labels="data/rugpull_labels.json", out="results.json",
+                 title="Main (tuned)"),
+    # The v1 held-out set was used to find v1's weaknesses, so since v2 it is a DEVELOPMENT set.
+    "heldout_v1": dict(servers="data/heldout_v1", labels="data/heldout_v1_labels.json", pairs="data/heldout_v1_rugpull",
+                       pair_labels="data/heldout_v1_rugpull_labels.json", out="heldout_v1_results.json",
+                       title="v1 held-out (now development)"),
+    # Written after the v2 freeze and never tuned on.
+    "heldout_v2": dict(servers="data/heldout_v2", labels="data/heldout_v2_labels.json", pairs="data/heldout_v2_rugpull",
+                       pair_labels="data/heldout_v2_rugpull_labels.json", out="heldout_v2_results.json",
+                       title="v2 fresh held-out (never tuned)"),
 }
-BENIGN_CHANGES = ("reformat", "whitespace", "version_bump", "typo_fix")
+BENIGN_CHANGES = ("reformat", "whitespace", "version_bump", "typo_fix", "punctuation_fix")
 
 
 def detector_hash() -> str:
@@ -132,26 +140,29 @@ def make_chart() -> Path:
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    main = json.loads((RESULTS / "results.json").read_text())
-    held = json.loads((RESULTS / "heldout_results.json").read_text())
-    names = list(main["checks"]) + ["overall"]
+    runs = [("results.json", "#2a6fbb"), ("heldout_v1_results.json", "#8a8a8a"), ("heldout_v2_results.json", "#e0832b")]
+    loaded = [(json.loads((RESULTS / f).read_text()), color) for f, color in runs]
+    titles = [cfg["title"] for cfg in SETS.values()]
+    names = list(loaded[0][0]["checks"]) + ["overall"]
     get = lambda r, n, k: (r["overall"] if n == "overall" else r["checks"][n])[k]  # noqa: E731
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(16, 4.8), sharey=True)
+    width = 0.27
     for ax, (key, title) in zip(axes, [("precision", "Precision (higher is better)"),
                                        ("recall", "Recall (higher is better)"),
                                        ("fpr", "False positive rate (lower is better)")]):
-        for offset, res, color, label in [(-0.2, main, "#2a6fbb", "Main (tuned)"), (0.2, held, "#e0832b", "Held-out (frozen)")]:
+        for j, ((res, color), label) in enumerate(zip(loaded, titles)):
             vals = [get(res, n, key) for n in names]
-            ax.bar([i + offset for i in range(len(names))], [v or 0 for v in vals], 0.4, color=color, label=label)
-            for i, v in enumerate(vals):
-                ax.text(i + offset, (v or 0) + 0.02, "n/a" if v is None else f"{v:.2f}", ha="center", fontsize=7)
+            xs = [i + (j - 1) * width for i in range(len(names))]
+            ax.bar(xs, [v or 0 for v in vals], width, color=color, label=label)
+            for x, v in zip(xs, vals):
+                ax.text(x, (v or 0) + 0.02, "n/a" if v is None else f"{v:.2f}", ha="center", fontsize=6)
         ax.set_xticks(range(len(names)), [n.replace("_", "\n") for n in names], fontsize=7)
         ax.set_title(title, fontsize=10)
         ax.set_ylim(0, 1.12)
         ax.spines[["top", "right"]].set_visible(False)
     handles, labels_ = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels_, loc="upper right", ncol=2, fontsize=9, frameon=False)
-    fig.suptitle("ToolGuard: tuned main set vs. frozen held-out set", fontsize=12)
+    fig.legend(handles, labels_, loc="upper right", ncol=3, fontsize=9, frameon=False)
+    fig.suptitle("ToolGuard v2: tuned vs. development vs. fresh held-out", fontsize=12)
     fig.tight_layout()
     out = RESULTS / "comparison.png"
     fig.savefig(out, dpi=130)
@@ -162,6 +173,8 @@ def main(argv=None) -> int:
     cmd = (argv or sys.argv[1:] or ["main"])[0]
     if cmd == "main":
         print_table(evaluate_set("main"))
+    elif cmd == "dev":
+        print_table(evaluate_set("heldout_v1"))
     elif cmd == "freeze":
         RESULTS.mkdir(exist_ok=True)
         FREEZE_FILE.write_text(detector_hash() + "\n")
@@ -172,7 +185,7 @@ def main(argv=None) -> int:
             print("Detectors changed after the freeze (or were never frozen). Run `freeze`, and if rules changed, "
                   "regenerate the held-out set first (see CLAUDE.md).")
             return 1
-        print_table(evaluate_set("heldout"))
+        print_table(evaluate_set("heldout_v2"))
     elif cmd == "chart":
         print("wrote", make_chart())
     else:

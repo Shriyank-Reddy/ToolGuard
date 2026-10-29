@@ -1,6 +1,6 @@
 {
   "set": "main",
-  "detector_hash": "c2fc0e5bdeba254804a58a6d64659ae43a7d663cbde5980ff060b63b756d48dd",
+  "detector_hash": "bb5280aab16e4f251ff3803b86b5a1ec6765d2cd9f220d4022b776ab033bc379",
   "n_tools": 120,
   "n_malicious": 47,
   "checks": {

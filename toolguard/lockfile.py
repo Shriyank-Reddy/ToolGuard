@@ -8,6 +8,7 @@ change to the name, description, schema or permissions always does.
 import difflib
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from . import config as C
@@ -102,12 +103,47 @@ def _is_minor(old: str, new: str) -> bool:
     return similarity >= C.MINOR_EDIT_SIMILARITY and len(new) - len(old) <= C.MINOR_EDIT_MAX_GROWTH
 
 
+def _tokens(text: str) -> list[str]:
+    """Lowercase words without punctuation or apostrophes ("doesn't" -> "doesnt")."""
+    return re.findall(r"[a-z0-9-]+", text.lower().replace("'", "").replace("\u2019", ""))
+
+
+def meaning_changes(old: str, new: str) -> list[str]:
+    """Small edits that still change what the text promises, e.g. 'never' -> 'always', an added 'not'.
+
+    Replacements of a word by a near-identical word are treated as spelling fixes and ignored.
+    """
+    a, b = _tokens(old), _tokens(new)
+    found = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if op == "equal":
+            continue
+        old_words, new_words = a[i1:i2], b[j1:j2]
+        if op == "replace" and len(old_words) == len(new_words):
+            pairs = [(x, y) for x, y in zip(old_words, new_words)
+                     if difflib.SequenceMatcher(None, x, y).ratio() < C.TYPO_SIMILARITY]
+            old_words, new_words = [x for x, _ in pairs], [y for _, y in pairs]
+        for word in old_words:
+            if word in C.MEANING_WORDS:
+                found.append(f"removed '{word}'")
+        for word in new_words:
+            if word in C.MEANING_WORDS:
+                found.append(f"added '{word}'")
+    return found
+
+
+def _urls(definition: dict) -> set[str]:
+    texts = [definition["description"]] + [p.get("description", "") for p in _params(definition).values()]
+    return set(re.findall(r"https?://[^\s)\"']+|[\w.+-]+@[\w-]+\.[\w.-]+", " ".join(texts)))
+
+
 def compare_definitions(old: dict, new: dict) -> tuple[str, list[str], str]:
     """Return (severity, short reasons, readable diff) for two different definitions.
 
     Policy (decided before evaluating):
       high   - permissions were added, or the new version trips checks 1-5 in a way the old one did not
-      medium - parameters added/removed, schema changed, or the description was materially rewritten
+      medium - parameters added/removed, schema changed, the description was materially rewritten,
+               a small edit changed the meaning (negation flip, 'never' -> 'always', ...), or a new URL/address appeared
       low    - typo-level wording edit, or permissions only reduced
     Formatting/whitespace/key-order/version-only changes never reach here (their hash is equal).
     """
@@ -129,7 +165,11 @@ def compare_definitions(old: dict, new: dict) -> tuple[str, list[str], str]:
 
     if old["description"] != new["description"]:
         diff_lines.append("description: " + word_diff(old["description"], new["description"]))
-        if _is_minor(old["description"], new["description"]):
+        flips = meaning_changes(old["description"], new["description"])
+        if flips:
+            reasons.append("the description's meaning changed (" + ", ".join(flips) + ")")
+            raise_to("medium")
+        elif _is_minor(old["description"], new["description"]):
             reasons.append("small wording change in the description")
         else:
             reasons.append("description was rewritten")
@@ -154,13 +194,22 @@ def compare_definitions(old: dict, new: dict) -> tuple[str, list[str], str]:
             raise_to("medium")
         if od != nd:
             diff_lines.append(f"param {name}: " + word_diff(od, nd))
-            if _is_minor(od, nd):
+            flips = meaning_changes(od, nd)
+            if flips:
+                reasons.append(f"the meaning of parameter '{name}' changed (" + ", ".join(flips) + ")")
+                raise_to("medium")
+            elif _is_minor(od, nd):
                 reasons.append(f"small wording change in parameter '{name}'")
             else:
                 reasons.append(f"description of parameter '{name}' was rewritten")
                 raise_to("medium")
     if old["inputSchema"].get("required") != new["inputSchema"].get("required"):
         reasons.append("required parameters changed")
+        raise_to("medium")
+
+    new_urls = sorted(_urls(new) - _urls(old))
+    if new_urls:
+        reasons.append("new web address(es): " + ", ".join(new_urls))
         raise_to("medium")
 
     # Did the change introduce something checks 1-5 now catch?

@@ -1,8 +1,8 @@
 """Generate the HELD-OUT set. Written AFTER the detectors were frozen.
 
 Run:  python scripts/make_heldout.py
-Writes data/heldout/*.json, data/heldout_labels.json, data/heldout_rugpull/*.json,
-data/heldout_rugpull_labels.json.
+Writes data/heldout_v1/*.json, data/heldout_v1_labels.json, data/heldout_v1_rugpull/*.json,
+data/heldout_v1_rugpull_labels.json.
 
 Rules: never tune detectors on this set. If detectors change, this set is burned and
 must be rewritten with fresh variations (see CLAUDE.md). New here compared with the
@@ -224,13 +224,13 @@ def main():
         servers.setdefault(sname, []).append(tool)
         labels[f"{sname}/{tool['name']}"] = tool_labels
     for sname, tools in servers.items():
-        write_json(ROOT / "data/heldout" / f"{sname}.json", make_server(sname, tools))
-    write_json(ROOT / "data/heldout_labels.json", labels)
+        write_json(ROOT / "data/heldout_v1" / f"{sname}.json", make_server(sname, tools))
+    write_json(ROOT / "data/heldout_v1_labels.json", labels)
     pair_labels = {}
     for pid, obj, info in rug_pairs():
-        write_json(ROOT / "data/heldout_rugpull" / f"{pid}.json", obj)
+        write_json(ROOT / "data/heldout_v1_rugpull" / f"{pid}.json", obj)
         pair_labels[pid] = info
-    write_json(ROOT / "data/heldout_rugpull_labels.json", pair_labels)
+    write_json(ROOT / "data/heldout_v1_rugpull_labels.json", pair_labels)
     mal = sum(1 for v in labels.values() if v)
     print(f"held-out: {len(servers)} servers, {len(labels)} tools ({mal} malicious), {len(pair_labels)} rug-pull pairs")
 
