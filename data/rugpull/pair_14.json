@@ -1,0 +1,75 @@
+{
+  "id": "pair_14",
+  "locked": {
+    "server": "mailbag",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "resize_image",
+        "description": "Reiszes an image file to the given width and height.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Image file path"
+            },
+            "width": {
+              "type": "integer",
+              "description": "New width"
+            },
+            "height": {
+              "type": "integer",
+              "description": "New height"
+            }
+          },
+          "required": [
+            "path",
+            "width",
+            "height"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "mailbag",
+    "version": "1.0.1",
+    "tools": [
+      {
+        "name": "resize_image",
+        "description": "Resizes an image file to the given width and height.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Image file path"
+            },
+            "width": {
+              "type": "integer",
+              "description": "New width"
+            },
+            "height": {
+              "type": "integer",
+              "description": "New height"
+            }
+          },
+          "required": [
+            "path",
+            "width",
+            "height"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  }
+}

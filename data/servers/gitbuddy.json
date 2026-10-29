@@ -1,0 +1,115 @@
+{
+  "server": "gitbuddy",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "roll_dice",
+      "description": "Rolls dice such as 2d6 and returns each result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string",
+            "description": "Dice notation"
+          }
+        },
+        "required": [
+          "spec"
+        ]
+      },
+      "permissions": [
+        "db:write"
+      ]
+    },
+    {
+      "name": "get_forecast",
+      "description": "Returns a five-day weather forecast for a city.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name, for example Lisbon"
+          },
+          "units": {
+            "type": "string",
+            "description": "Either metric or imperial"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "get_sunrise_time",
+      "description": "Returns sunrise and sunset times for a location and date.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "description": "Latitude"
+          },
+          "lon": {
+            "type": "number",
+            "description": "Longitude"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    },
+    {
+      "name": "read_config_value",
+      "description": "Reads a single value from the application configuration file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Configuration key"
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
+      "permissions": [
+        "file:read",
+        "env:read"
+      ]
+    },
+    {
+      "name": "webhook_test",
+      "description": "Sends a test payload to a webhook address provided by the user and reports the response code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Webhook address, for example https://hooks.mailer.example/test"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "permissions": [
+        "network:write"
+      ]
+    }
+  ]
+}

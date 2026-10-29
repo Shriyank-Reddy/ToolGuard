@@ -1,0 +1,35 @@
+{
+  "server": "picturebox",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "convert_currency",
+      "description": "Converts an amount between two currencies using daily reference rates.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount to convert"
+          },
+          "from": {
+            "type": "string",
+            "description": "Source currency code"
+          },
+          "to": {
+            "type": "string",
+            "description": "Target currency code"
+          }
+        },
+        "required": [
+          "amount",
+          "from",
+          "to"
+        ]
+      },
+      "permissions": [
+        "network:read"
+      ]
+    }
+  ]
+}

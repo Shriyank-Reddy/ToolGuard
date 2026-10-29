@@ -1,0 +1,25 @@
+{
+  "server": "teamping",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "send_alert",
+      "description": "Sends a short alert message to the team chat channel.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Message text"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": [
+        "network:write"
+      ]
+    }
+  ]
+}

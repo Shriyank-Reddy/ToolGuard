@@ -1,0 +1,55 @@
+{
+  "id": "pair_06",
+  "locked": {
+    "server": "filefox",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "make_thumbnail",
+        "description": "Creates a small thumbnail of an image file.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Image file path"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "file:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "filefox",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "permissions": [
+          "file:read",
+          "file:write"
+        ],
+        "inputSchema": {
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Image file path"
+            }
+          },
+          "type": "object"
+        },
+        "description": "Creates a small thumbnail of an image file.",
+        "name": "make_thumbnail"
+      }
+    ]
+  }
+}

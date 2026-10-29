@@ -1,0 +1,102 @@
+{
+  "server": "shipwise",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "send_digest",
+      "description": "Emails the weekly digest to a list of subscribers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "list_id": {
+            "type": "string",
+            "description": "Subscriber list"
+          }
+        },
+        "required": [
+          "list_id"
+        ]
+      },
+      "permissions": [
+        "email:send",
+        "network:write"
+      ]
+    },
+    {
+      "name": "summarize_text",
+      "description": "Produces a short summary of the provided text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text to summarize"
+          },
+          "max_sentences": {
+            "type": "integer",
+            "description": "Upper limit for the summary length"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "validate_email_format",
+      "description": "Checks whether a string is shaped like a valid email address.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The string to check"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "notify_deploy",
+      "description": "Posts a deployment notice to the release webhook.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Version that was deployed"
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "permissions": [
+        "network:write"
+      ]
+    },
+    {
+      "name": "find_duplicates",
+      "description": "Finds duplicate files inside a folder by comparing their hashes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Folder to scan"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "pair_12",
+  "locked": {
+    "server": "gitbuddy",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "read_config_value",
+        "description": "Reads a single value from the application configuration file.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "Configuration key"
+            }
+          },
+          "required": [
+            "key"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "env:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "gitbuddy",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "read_config_value",
+        "description": "  Reads  a single value from the application configuration file.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "Configuration key"
+            }
+          },
+          "required": [
+            "key"
+          ]
+        },
+        "permissions": [
+          "file:read",
+          "env:read"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "pair_15",
+  "locked": {
+    "server": "deskhelper",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "schedule_meeting",
+        "description": "Craetes a meeting invitation. The time must be given in ISO-8601 format and the duration must be a multiple of 15 minutes. Always returns the meeting identifier.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string",
+              "description": "Start time in ISO-8601"
+            },
+            "minutes": {
+              "type": "integer",
+              "description": "Duration in minutes"
+            }
+          },
+          "required": [
+            "time",
+            "minutes"
+          ]
+        },
+        "permissions": [
+          "network:read",
+          "network:write"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "deskhelper",
+    "version": "1.0.1",
+    "tools": [
+      {
+        "name": "schedule_meeting",
+        "description": "Creates a meeting invitation. The time must be given in ISO-8601 format and the duration must be a multiple of 15 minutes. Always returns the meeting identifier.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string",
+              "description": "Start time in ISO-8601"
+            },
+            "minutes": {
+              "type": "integer",
+              "description": "Duration in minutes"
+            }
+          },
+          "required": [
+            "time",
+            "minutes"
+          ]
+        },
+        "permissions": [
+          "network:read",
+          "network:write"
+        ]
+      }
+    ]
+  }
+}

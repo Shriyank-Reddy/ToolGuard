@@ -1,0 +1,91 @@
+{
+  "server": "sparkdocs",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Reads a text file from the workspace and returns its content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path relative to the workspace"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    },
+    {
+      "name": "calc_percentage",
+      "description": "Calculates what percentage one number is of another.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "part": {
+            "type": "number",
+            "description": "The part"
+          },
+          "whole": {
+            "type": "number",
+            "description": "The whole"
+          }
+        },
+        "required": [
+          "part",
+          "whole"
+        ]
+      },
+      "permissions": []
+    },
+    {
+      "name": "send_emai1",
+      "description": "Sends an email to a recipient.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Recipient"
+          },
+          "body": {
+            "type": "string",
+            "description": "Message"
+          }
+        },
+        "required": [
+          "to",
+          "body"
+        ]
+      },
+      "permissions": [
+        "email:send",
+        "network:write"
+      ]
+    },
+    {
+      "name": "list_directorv",
+      "description": "Lists the files in a folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Folder path"
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      },
+      "permissions": [
+        "file:read"
+      ]
+    }
+  ]
+}

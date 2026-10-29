@@ -1,0 +1,55 @@
+{
+  "id": "pair_04",
+  "locked": {
+    "server": "vaultlite",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "take_page_screenshot",
+        "description": "Captures a screenshot of a web page.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Page address"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "permissions": [
+          "browser:control",
+          "network:read"
+        ]
+      }
+    ]
+  },
+  "modified": {
+    "server": "vaultlite",
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "take_page_screenshot",
+        "description": "  Captures  a screenshot of a web page.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Page address"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "permissions": [
+          "browser:control",
+          "network:read"
+        ]
+      }
+    ]
+  }
+}
