@@ -145,11 +145,12 @@ def make_chart() -> Path:
             ax.bar([i + offset for i in range(len(names))], [v or 0 for v in vals], 0.4, color=color, label=label)
             for i, v in enumerate(vals):
                 ax.text(i + offset, (v or 0) + 0.02, "n/a" if v is None else f"{v:.2f}", ha="center", fontsize=7)
-        ax.set_xticks(range(len(names)), [n.replace("_", "\n") for n in names], fontsize=8)
+        ax.set_xticks(range(len(names)), [n.replace("_", "\n") for n in names], fontsize=7)
         ax.set_title(title, fontsize=10)
         ax.set_ylim(0, 1.12)
         ax.spines[["top", "right"]].set_visible(False)
-    axes[0].legend(loc="lower left", fontsize=8)
+    handles, labels_ = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels_, loc="upper right", ncol=2, fontsize=9, frameon=False)
     fig.suptitle("ToolGuard: tuned main set vs. frozen held-out set", fontsize=12)
     fig.tight_layout()
     out = RESULTS / "comparison.png"
